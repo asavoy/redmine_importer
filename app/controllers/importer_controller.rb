@@ -23,6 +23,12 @@ class ImporterController < ApplicationController
     # save import file
     @original_filename = file.original_filename
     tmpfile = Tempfile.new("redmine_importer")
+	
+	# Needed to make fastercsv work on Windows
+	# See http://www.redmine.org/boards/3/topics/7986#message-8917
+	tmpfile.binmode 
+	file.binmode
+
     if tmpfile
       tmpfile.write(file.read)
       tmpfile.close
