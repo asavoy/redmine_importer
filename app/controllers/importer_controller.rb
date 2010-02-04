@@ -28,6 +28,11 @@ class ImporterController < ApplicationController
 	# See http://www.redmine.org/boards/3/topics/7986#message-8917
 	tmpfile.binmode 
 	file.binmode
+	
+	# Skip BOM if file is UTF8
+	if(encoding == "U")
+		file.seek(3)
+	end
 
     if tmpfile
       tmpfile.write(file.read)
