@@ -38,16 +38,13 @@ class ImporterController < ApplicationController
       tmpfile.write(file.read)
       tmpfile.close
       tmpfilename = File.basename(tmpfile.path)
-      if !$tmpfiles
-        $tmpfiles = Hash.new
-      end
-      $tmpfiles[tmpfilename] = tmpfile
     else
       flash[:error] = "Cannot save import file."
       return
     end
     
     session[:importer_tmpfile] = tmpfilename
+	session[:importer_tmpfiledirname] = File.dirname(tmpfile.path)
     session[:importer_splitter] = splitter
     session[:importer_wrapper] = wrapper
     session[:importer_encoding] = encoding
@@ -85,12 +82,13 @@ class ImporterController < ApplicationController
 
   def result
     tmpfilename = session[:importer_tmpfile]
+	tmpfiledirname = session[:importer_tmpfiledirname]
     splitter = session[:importer_splitter]
     wrapper = session[:importer_wrapper]
     encoding = session[:importer_encoding]
     
     if tmpfilename
-      tmpfile = $tmpfiles[tmpfilename]
+      tmpfile = File.open(tmpfiledirname + "/" + tmpfilename)
       if tmpfile == nil
         flash[:error] = "Missing imported file"
         return
