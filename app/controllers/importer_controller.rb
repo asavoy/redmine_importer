@@ -233,7 +233,10 @@ class ImporterController < ApplicationController
         # 记录错误
         @failed_count += 1
         @failed_issues[@handle_count + 1] = row
-      end
+      else
+	    # Send email notification
+		Mailer.deliver_issue_add(issue) if Setting.notified_events.include?('issue_added')
+	  end
   
       if journal
         journal
