@@ -3,6 +3,7 @@ require 'tempfile'
 
 class ImporterController < ApplicationController
   unloadable
+  include ApplicationHelper
   
   before_filter :find_project
 
@@ -29,8 +30,9 @@ class ImporterController < ApplicationController
 	tmpfile.binmode 
 	file.binmode
 	
-	# Skip BOM if file is UTF8
-	if(encoding == "U")
+	# Skip BOM if file is UTF8 with BOM
+	if(encoding == "Ubom")
+		encoding = "U"
 		file.seek(3)
 	end
 
@@ -77,7 +79,7 @@ class ImporterController < ApplicationController
     @project.all_issue_custom_fields.each do |cfield|
       @attrs.push([cfield.name, cfield.name])
     end
-    @attrs.sort! {|x,y| x.to_s y.to_s}
+    #@attrs.sort! {|x,y| x.to_s y.to_s}
   end
 
   def result
