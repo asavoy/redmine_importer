@@ -80,6 +80,15 @@ class ImporterController < ApplicationController
       @attrs.push([cfield.name, cfield.name])
     end
     #@attrs.sort! {|x,y| x.to_s y.to_s}
+	
+	# Create mapping from Humanized to field_name, for auto-selecting columns
+	@fields_map = Hash.new
+	@attrs.each do |x,y|
+		@fields_map[x] = y
+	end
+	# Special case for Id
+	@fields_map["#"] = "id";
+	
   end
 
   def result
